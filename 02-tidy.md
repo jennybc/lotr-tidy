@@ -15,7 +15,15 @@ Import untidy Lord of the Rings data
 
 We now import the untidy data that was presented in the three film-specific word count tables from [the intro](01-intro.md).
 
-I assume that data can be found as three plain text, delimited files, one for each film. How to liberate data from spreadsheets or tables in word processing documents is beyond the scope of this tutorial. We bring the data into data frames or tibbles, one per film, and do some inspection.
+I assume that data can be found as three plain text, delimited files, one for each film. How to liberate data from spreadsheets or tables in word processing documents is beyond the scope of this tutorial.
+
+The files live here in this repo, which you could clone as a new RStudio Project. Get them into your current project in a `data` subdirectory with your favorite method:
+
+-   [The\_Fellowship\_Of\_The\_Ring.csv](data/The_Fellowship_Of_The_Ring.csv)
+-   [The\_Two\_Towers.csv](data/The_Two_Towers.csv)
+-   [The\_Return\_Of\_The\_King.csv](data/The_Return_Of_The_King.csv)
+
+We bring the data into data frames or tibbles, one per film, and do some inspection.
 
 ``` r
 library(tidyverse)
