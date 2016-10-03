@@ -19,66 +19,47 @@ I assume that data can be found as three plain text, delimited files, one for ea
 
 ``` r
 library(tidyverse)
-```
-
-    ## Loading tidyverse: ggplot2
-    ## Loading tidyverse: tibble
-    ## Loading tidyverse: tidyr
-    ## Loading tidyverse: readr
-    ## Loading tidyverse: purrr
-    ## Loading tidyverse: dplyr
-
-    ## Conflicts with tidy packages ----------------------------------------------
-
-    ## filter(): dplyr, stats
-    ## lag():    dplyr, stats
-
-``` r
+#> Loading tidyverse: ggplot2
+#> Loading tidyverse: tibble
+#> Loading tidyverse: tidyr
+#> Loading tidyverse: readr
+#> Loading tidyverse: purrr
+#> Loading tidyverse: dplyr
+#> Conflicts with tidy packages ----------------------------------------------
+#> filter(): dplyr, stats
+#> lag():    dplyr, stats
 fship <- read_csv(file.path("data", "The_Fellowship_Of_The_Ring.csv"))
-```
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   Film = col_character(),
-    ##   Race = col_character(),
-    ##   Female = col_integer(),
-    ##   Male = col_integer()
-    ## )
-
-``` r
+#> Parsed with column specification:
+#> cols(
+#>   Film = col_character(),
+#>   Race = col_character(),
+#>   Female = col_integer(),
+#>   Male = col_integer()
+#> )
 ttow <- read_csv(file.path("data", "The_Two_Towers.csv"))
-```
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   Film = col_character(),
-    ##   Race = col_character(),
-    ##   Female = col_integer(),
-    ##   Male = col_integer()
-    ## )
-
-``` r
+#> Parsed with column specification:
+#> cols(
+#>   Film = col_character(),
+#>   Race = col_character(),
+#>   Female = col_integer(),
+#>   Male = col_integer()
+#> )
 rking <- read_csv(file.path("data", "The_Return_Of_The_King.csv")) 
-```
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   Film = col_character(),
-    ##   Race = col_character(),
-    ##   Female = col_integer(),
-    ##   Male = col_integer()
-    ## )
-
-``` r
+#> Parsed with column specification:
+#> cols(
+#>   Film = col_character(),
+#>   Race = col_character(),
+#>   Female = col_integer(),
+#>   Male = col_integer()
+#> )
 rking
+#> # A tibble: 3 × 4
+#>                     Film   Race Female  Male
+#>                    <chr>  <chr>  <int> <int>
+#> 1 The Return Of The King    Elf    183   510
+#> 2 The Return Of The King Hobbit      2  2673
+#> 3 The Return Of The King    Man    268  2459
 ```
-
-    ## # A tibble: 3 × 4
-    ##                     Film   Race Female  Male
-    ##                    <chr>  <chr>  <int> <int>
-    ## 1 The Return Of The King    Elf    183   510
-    ## 2 The Return Of The King Hobbit      2  2673
-    ## 3 The Return Of The King    Man    268  2459
 
 Collect untidy Lord of the Rings data into a single data frame
 --------------------------------------------------------------
@@ -88,30 +69,29 @@ We now have one data frame per film, each with a common set of 4 variables. Step
 ``` r
 lotr_untidy <- bind_rows(fship, ttow, rking)
 str(lotr_untidy)
-```
-
-    ## Classes 'tbl_df', 'tbl' and 'data.frame':    9 obs. of  4 variables:
-    ##  $ Film  : chr  "The Fellowship Of The Ring" "The Fellowship Of The Ring" "The Fellowship Of The Ring" "The Two Towers" ...
-    ##  $ Race  : chr  "Elf" "Hobbit" "Man" "Elf" ...
-    ##  $ Female: int  1229 14 0 331 0 401 183 2 268
-    ##  $ Male  : int  971 3644 1995 513 2463 3589 510 2673 2459
-
-``` r
+#> Classes 'tbl_df', 'tbl' and 'data.frame':    9 obs. of  4 variables:
+#>  $ Film  : chr  "The Fellowship Of The Ring" "The Fellowship Of The Ring" "The Fellowship Of The Ring" "The Two Towers" ...
+#>  $ Race  : chr  "Elf" "Hobbit" "Man" "Elf" ...
+#>  $ Female: int  1229 14 0 331 0 401 183 2 268
+#>  $ Male  : int  971 3644 1995 513 2463 3589 510 2673 2459
 lotr_untidy
+#> # A tibble: 9 × 4
+#>                         Film   Race Female  Male
+#>                        <chr>  <chr>  <int> <int>
+#> 1 The Fellowship Of The Ring    Elf   1229   971
+#> 2 The Fellowship Of The Ring Hobbit     14  3644
+#> 3 The Fellowship Of The Ring    Man      0  1995
+#> 4             The Two Towers    Elf    331   513
+#> 5             The Two Towers Hobbit      0  2463
+#> 6             The Two Towers    Man    401  3589
+#> 7     The Return Of The King    Elf    183   510
+#> 8     The Return Of The King Hobbit      2  2673
+#> 9     The Return Of The King    Man    268  2459
 ```
 
-    ## # A tibble: 9 × 4
-    ##                         Film   Race Female  Male
-    ##                        <chr>  <chr>  <int> <int>
-    ## 1 The Fellowship Of The Ring    Elf   1229   971
-    ## 2 The Fellowship Of The Ring Hobbit     14  3644
-    ## 3 The Fellowship Of The Ring    Man      0  1995
-    ## 4             The Two Towers    Elf    331   513
-    ## 5             The Two Towers Hobbit      0  2463
-    ## 6             The Two Towers    Man    401  3589
-    ## 7     The Return Of The King    Elf    183   510
-    ## 8     The Return Of The King Hobbit      2  2673
-    ## 9     The Return Of The King    Man    268  2459
+Assembling one large data object from lots of little ones is common data preparation task. When the pieces are as similar as they here, it's nice to assemble them into one object right away. In other scenarios, you may need to do some remedial work on the pieces before they can be fitted together nicely.
+
+A good guiding principle is to glue the pieces together as early as possible, because it's easier and more efficient to tidy a single object than 20 or 1000.
 
 Tidy the untidy Lord of the Rings data
 --------------------------------------
@@ -122,33 +102,32 @@ We are still violating one of the fundamental principles of **tidy data**. "Word
 lotr_tidy <-
   gather(lotr_untidy, key = 'Gender', value = 'Words', Female, Male)
 lotr_tidy
+#> # A tibble: 18 × 4
+#>                          Film   Race Gender Words
+#>                         <chr>  <chr>  <chr> <int>
+#> 1  The Fellowship Of The Ring    Elf Female  1229
+#> 2  The Fellowship Of The Ring Hobbit Female    14
+#> 3  The Fellowship Of The Ring    Man Female     0
+#> 4              The Two Towers    Elf Female   331
+#> 5              The Two Towers Hobbit Female     0
+#> 6              The Two Towers    Man Female   401
+#> 7      The Return Of The King    Elf Female   183
+#> 8      The Return Of The King Hobbit Female     2
+#> 9      The Return Of The King    Man Female   268
+#> 10 The Fellowship Of The Ring    Elf   Male   971
+#> 11 The Fellowship Of The Ring Hobbit   Male  3644
+#> 12 The Fellowship Of The Ring    Man   Male  1995
+#> 13             The Two Towers    Elf   Male   513
+#> 14             The Two Towers Hobbit   Male  2463
+#> 15             The Two Towers    Man   Male  3589
+#> 16     The Return Of The King    Elf   Male   510
+#> 17     The Return Of The King Hobbit   Male  2673
+#> 18     The Return Of The King    Man   Male  2459
 ```
-
-    ## # A tibble: 18 × 4
-    ##                          Film   Race Gender Words
-    ##                         <chr>  <chr>  <chr> <int>
-    ## 1  The Fellowship Of The Ring    Elf Female  1229
-    ## 2  The Fellowship Of The Ring Hobbit Female    14
-    ## 3  The Fellowship Of The Ring    Man Female     0
-    ## 4              The Two Towers    Elf Female   331
-    ## 5              The Two Towers Hobbit Female     0
-    ## 6              The Two Towers    Man Female   401
-    ## 7      The Return Of The King    Elf Female   183
-    ## 8      The Return Of The King Hobbit Female     2
-    ## 9      The Return Of The King    Man Female   268
-    ## 10 The Fellowship Of The Ring    Elf   Male   971
-    ## 11 The Fellowship Of The Ring Hobbit   Male  3644
-    ## 12 The Fellowship Of The Ring    Man   Male  1995
-    ## 13             The Two Towers    Elf   Male   513
-    ## 14             The Two Towers Hobbit   Male  2463
-    ## 15             The Two Towers    Man   Male  3589
-    ## 16     The Return Of The King    Elf   Male   510
-    ## 17     The Return Of The King Hobbit   Male  2673
-    ## 18     The Return Of The King    Man   Male  2459
 
 Tidy data ... mission accomplished!
 
-To explain our call to `gather()` above: we gathered the *values* in variables `Female` and `Male` together into a single new variable `Words`. A second new variable `Gender` serves as a *key*, explaining whether each of the values in `Words` refers to `Female` or `Male`. All other variables, such as `Film`, remain unchanged and are simply replicated as needed. Read the documentation for `gather()` for more information and examples.
+To explain our call to `gather()` above, let's read it from right to left: we took the variables `Female` and `Male` and gathered their *values* into a single new variable `Words`. This forced the creation of a companion variable `Gender`, a *key*, which tells whether a specific value of `Words` came from `Female` or `Male`. All other variables, such as `Film`, remain unchanged and are simply replicated as needed. The documentation for `gather()` gives more examples and documents additional arguments.
 
 Write the tidy data to a delimited file
 ---------------------------------------
@@ -159,15 +138,15 @@ Now we write this multi-film, tidy dataset to file for use in various downstream
 write_csv(lotr_tidy, path = file.path("data", "lotr_tidy.csv"))
 ```
 
-You can inspect this delimited file here: [lotr\_tidy.csv](data/tidy-data/lotr_tidy.csv).
+You can inspect this delimited file here: [lotr\_tidy.csv](data/lotr_tidy.csv).
 
 Exercises
 ---------
 
 The word count data is given in these two **untidy** and gender-specific files:
 
--   [Female.csv](data/tidy-data/Female.csv)
--   [Male.csv](data/tidy-data/Male.csv)
+-   [Female.csv](data/Female.csv)
+-   [Male.csv](data/Male.csv)
 
 Write an R script that reads them in and writes a single tidy data frame to file. Literally, reproduce the `lotr_tidy` data frame and the `lotr_tidy.csv` data file from above.
 
@@ -193,6 +172,7 @@ Watch out for how **untidy** data seduces you into working with it more than you
 
 -   Data optimized for consumption by human eyeballs *is* attractive, so it's hard to remember it's suboptimal for computation. How can something that looks so pretty be so wrong?
 -   Tidy data often has lots of repetition, which triggers hand-wringing about efficiency and aesthetics. Until you can document a performance problem, keep calm and tidy on.
+-   Tidying operations are unfamiliar to many of us and we avoid them, subconsciously preferring to faff around with other workarounds that are more familiar.
 
 ### Where to next?
 

@@ -5,6 +5,10 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: github_document
 ---
 
+```{r setup, include = FALSE, cache = FALSE}
+knitr::opts_chunk$set(error = TRUE, collapse = TRUE, comment = "#>")
+```
+
 An important aspect of "writing data for computers" is to make your data __tidy__. Key features of __tidy__ data:
 
   * Each column is a variable
@@ -36,6 +40,10 @@ str(lotr_untidy)
 lotr_untidy
 ```
 
+Assembling one large data object from lots of little ones is common data preparation task. When the pieces are as similar as they here, it's nice to assemble them into one object right away. In other scenarios, you may need to do some remedial work on the pieces before they can be fitted together nicely.
+
+A good guiding principle is to glue the pieces together as early as possible, because it's easier and more efficient to tidy a single object than 20 or 1000.
+
 ## Tidy the untidy Lord of the Rings data
 
 We are still violating one of the fundamental principles of __tidy data__. "Word count" is a fundamental variable in our dataset and it's currently spread out over two variables, `Female` and `Male`. Conceptually, we need to gather up the word counts into a single variable and create a new variable, `Gender`, to track whether each count refers to females or males. We use the `gather()` function from the tidyr package to do this.
@@ -47,7 +55,7 @@ lotr_tidy
 
 Tidy data ... mission accomplished!
 
-To explain our call to `gather()` above: we gathered the *values* in variables `Female` and `Male` together into a single new variable `Words`. A second new variable `Gender` serves as a *key*, explaining whether each of the values in `Words` refers to `Female` or `Male`. All other variables, such as `Film`, remain unchanged and are simply replicated as needed. Read the documentation for `gather()` for more information and examples.
+To explain our call to `gather()` above, let's read it from right to left: we took the variables `Female` and `Male` and gathered their *values* into a single new variable `Words`. This forced the creation of a companion variable `Gender`, a *key*, which tells whether a specific value of `Words` came from `Female` or `Male`. All other variables, such as `Film`, remain unchanged and are simply replicated as needed. The documentation for `gather()` gives more examples and documents additional arguments.
 
 ## Write the tidy data to a delimited file
 
@@ -57,14 +65,14 @@ Now we write this multi-film, tidy dataset to file for use in various downstream
 write_csv(lotr_tidy, path = file.path("data", "lotr_tidy.csv"))
 ```
 
-You can inspect this delimited file here: [lotr_tidy.csv](data/tidy-data/lotr_tidy.csv).
+You can inspect this delimited file here: [lotr_tidy.csv](data/lotr_tidy.csv).
 
 ## Exercises
 
 The word count data is given in these two __untidy__ and gender-specific files:
 
-  * [Female.csv](data/tidy-data/Female.csv)
-  * [Male.csv](data/tidy-data/Male.csv)
+  * [Female.csv](data/Female.csv)
+  * [Male.csv](data/Male.csv)
   
 Write an R script that reads them in and writes a single tidy data frame to file. Literally, reproduce the `lotr_tidy` data frame and the `lotr_tidy.csv` data file from above.
 
@@ -89,6 +97,7 @@ Watch out for how __untidy__ data seduces you into working with it more than you
 
   * Data optimized for consumption by human eyeballs *is* attractive, so it's hard to remember it's suboptimal for computation. How can something that looks so pretty be so wrong?
   * Tidy data often has lots of repetition, which triggers hand-wringing about efficiency and aesthetics. Until you can document a performance problem, keep calm and tidy on.
+  * Tidying operations are unfamiliar to many of us and we avoid them, subconsciously preferring to faff around with other workarounds that are more familiar.
 
 ### Where to next?
 
