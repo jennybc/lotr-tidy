@@ -8,14 +8,14 @@ Data used: words spoken by characters of different races and gender in the Lord 
 
 Learner-facing dependencies:
 
-  * files in the `tidy-data` sub-directory of the Data Carpentry `data` directory
+  * files in the `data` directory
   * `tidyr` package (only true dependency)
   * `ggplot2` is used for illustration but is not mission critical 
   * `dplyr` and `reshape2` are used in the bonus content
 
 Instructor dependencies:
 
-  * `curl` if you execute the code to grab the Lord of the Rings data used in examples from GitHub. Note that the files are also included in the `datacarpentry/data/tidy-data` directory, so data download is avoidable.
+  * `curl` if you execute the code to grab the Lord of the Rings data used in examples from GitHub. Note that the files are also included in the `data` directory, so data download is avoidable.
   * `rmarkdown`, `knitr`, and `xtable` if you want to compile the `Rmd` to `md` and `html`
 
 Possible to do's
