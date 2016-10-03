@@ -1,11 +1,6 @@
----
-title: "01-intro.Rmd"
-author: "Jenny Bryan"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
-output:
-  html_document:
-    keep_md: TRUE
----
+# 01-intro.Rmd
+Jenny Bryan  
+`r format(Sys.time(), '%d %B, %Y')`  
 
 <blockquote class="twitter-tweet" lang="en"><p>If I had one thing to tell biologists learning bioinformatics, it would be &quot;write code for humans, write data for computers&quot;.</p>&mdash; Vince Buffalo (@vsbuffalo) <a href="https://twitter.com/vsbuffalo/statuses/358699162679787521">July 20, 2013</a></blockquote>
 
@@ -20,81 +15,43 @@ If you are struggling to make a figure, for example, stop and think hard about w
 
 I will give you a concrete example of some untidy data I created from [this data from the Lord of the Rings Trilogy](https://github.com/jennybc/lotr).
 
-```{r make-tidy-data-untidy, include = FALSE}
-library(knitr)
-library(dplyr)
-library(tidyr)
-library(xtable)
 
-if (!file.exists(file.path("data", "lotr_clean.tsv"))) {
-  download.file(paste0("https://raw.githubusercontent.com/jennybc/",
-                       "lotr/master/lotr_clean.tsv"), 
-                destfile = file.path("data", "lotr_clean.tsv"),
-                method = "curl")
-}
-lotr_dat <- tbl_df(read.delim(file.path("data", "lotr_clean.tsv"),
-                              stringsAsFactor = FALSE))
-females <- c("Galadriel", "Arwen", "Lobelia Sackville-Baggins", "Rosie",
-             "Mrs. Bracegirdle", "Eowyn", "Freda", "Rohan Maiden")
-lotr_dat <-
-  mutate(lotr_dat,
-         Film = factor(Film, levels = c("The Fellowship Of The Ring",
-                                        "The Two Towers",
-                                        "The Return Of The King")),
-         Gender = factor(ifelse(Character %in% females, "Female", "Male")),
-         Race = factor(Race))
-(lotr_tidy <- lotr_dat %>%
-   filter(Race %in% c("Elf", "Hobbit", "Man")) %>%
-   droplevels %>%
-   group_by(Film, Gender, Race) %>%
-   summarize(Words = sum(Words)))
-(all_combns <- with(lotr_tidy,
-                    expand.grid(Film = levels(Film), Race = levels(Race),
-                                Gender = levels(Gender))))
-lotr_tidy <- left_join(all_combns, lotr_tidy)
-## 2014-11-04 working around a dplyr join bug re factor levels
-lotr_tidy <- lotr_tidy %>%
-  mutate(Film = factor(Film, levels = c("The Fellowship Of The Ring",
-                                        "The Two Towers",
-                                        "The Return Of The King")))
-lotr_tidy[is.na(lotr_tidy)] <- 0
-lotr_tidy
-lotr_tidy <- lotr_tidy %>% arrange(Film, Race, Gender)
-```
 
-```{r echo = FALSE}
-make_untidy_table <- function(film) {
-  tmp <- lotr_tidy %>%
-    filter(Film == film) %>%
-    select(-Film)
-  with(tmp,
-       data.frame(Race = Race[Gender == "Female"],
-                  Female = Words[Gender == "Female"],
-                  Male = Words[Gender == "Male"]))
-  }
-```
+
 <table border = 1>
 <tr>
 <td>
-```{r results='asis', echo=FALSE}
-print(xtable(make_untidy_table("The Fellowship Of The Ring"),
-             digits = 0, caption = "The Fellowship Of The Ring"),
-      caption.placement = "top", include.rownames = FALSE, type='html')
-```
+<!-- html table generated in R 3.3.1 by xtable 1.8-2 package -->
+<!-- Sun Oct  2 21:34:28 2016 -->
+<table border=1>
+<caption align="top"> The Fellowship Of The Ring </caption>
+<tr> <th> Race </th> <th> Female </th> <th> Male </th>  </tr>
+  <tr> <td> Elf </td> <td align="right"> 1229 </td> <td align="right"> 971 </td> </tr>
+  <tr> <td> Hobbit </td> <td align="right"> 14 </td> <td align="right"> 3644 </td> </tr>
+  <tr> <td> Man </td> <td align="right"> 0 </td> <td align="right"> 1995 </td> </tr>
+   </table>
 </td>
 <td>
-```{r results='asis', echo=FALSE}
-print(xtable(make_untidy_table("The Two Towers"),
-             digits = 0, caption = "The Two Towers"),
-      caption.placement = "top", include.rownames = FALSE, type='html')
-```
+<!-- html table generated in R 3.3.1 by xtable 1.8-2 package -->
+<!-- Sun Oct  2 21:34:28 2016 -->
+<table border=1>
+<caption align="top"> The Two Towers </caption>
+<tr> <th> Race </th> <th> Female </th> <th> Male </th>  </tr>
+  <tr> <td> Elf </td> <td align="right"> 331 </td> <td align="right"> 513 </td> </tr>
+  <tr> <td> Hobbit </td> <td align="right"> 0 </td> <td align="right"> 2463 </td> </tr>
+  <tr> <td> Man </td> <td align="right"> 401 </td> <td align="right"> 3589 </td> </tr>
+   </table>
 </td>
 <td>
-```{r results='asis', echo=FALSE}
-print(xtable(make_untidy_table("The Return Of The King"),
-             digits = 0, caption = "The Return Of The King"),
-      caption.placement = "top", include.rownames = FALSE, type='html')
-```
+<!-- html table generated in R 3.3.1 by xtable 1.8-2 package -->
+<!-- Sun Oct  2 21:34:28 2016 -->
+<table border=1>
+<caption align="top"> The Return Of The King </caption>
+<tr> <th> Race </th> <th> Female </th> <th> Male </th>  </tr>
+  <tr> <td> Elf </td> <td align="right"> 183 </td> <td align="right"> 510 </td> </tr>
+  <tr> <td> Hobbit </td> <td align="right"> 2 </td> <td align="right"> 2673 </td> </tr>
+  <tr> <td> Man </td> <td align="right"> 268 </td> <td align="right"> 2459 </td> </tr>
+   </table>
 </td>
 </tr>
 </table>
@@ -118,9 +75,29 @@ How well does your approach scale if there were many more movies or if I provide
 
 Here's how the same data looks in tidy form:
 
-```{r echo = FALSE, results = 'asis'}
-print(xtable(lotr_tidy, digits = 0), include.rownames = FALSE, type='html')
-```
+<!-- html table generated in R 3.3.1 by xtable 1.8-2 package -->
+<!-- Sun Oct  2 21:34:28 2016 -->
+<table border=1>
+<tr> <th> Film </th> <th> Race </th> <th> Gender </th> <th> Words </th>  </tr>
+  <tr> <td> The Fellowship Of The Ring </td> <td> Elf </td> <td> Female </td> <td align="right"> 1229 </td> </tr>
+  <tr> <td> The Fellowship Of The Ring </td> <td> Elf </td> <td> Male </td> <td align="right"> 971 </td> </tr>
+  <tr> <td> The Fellowship Of The Ring </td> <td> Hobbit </td> <td> Female </td> <td align="right"> 14 </td> </tr>
+  <tr> <td> The Fellowship Of The Ring </td> <td> Hobbit </td> <td> Male </td> <td align="right"> 3644 </td> </tr>
+  <tr> <td> The Fellowship Of The Ring </td> <td> Man </td> <td> Female </td> <td align="right"> 0 </td> </tr>
+  <tr> <td> The Fellowship Of The Ring </td> <td> Man </td> <td> Male </td> <td align="right"> 1995 </td> </tr>
+  <tr> <td> The Two Towers </td> <td> Elf </td> <td> Female </td> <td align="right"> 331 </td> </tr>
+  <tr> <td> The Two Towers </td> <td> Elf </td> <td> Male </td> <td align="right"> 513 </td> </tr>
+  <tr> <td> The Two Towers </td> <td> Hobbit </td> <td> Female </td> <td align="right"> 0 </td> </tr>
+  <tr> <td> The Two Towers </td> <td> Hobbit </td> <td> Male </td> <td align="right"> 2463 </td> </tr>
+  <tr> <td> The Two Towers </td> <td> Man </td> <td> Female </td> <td align="right"> 401 </td> </tr>
+  <tr> <td> The Two Towers </td> <td> Man </td> <td> Male </td> <td align="right"> 3589 </td> </tr>
+  <tr> <td> The Return Of The King </td> <td> Elf </td> <td> Female </td> <td align="right"> 183 </td> </tr>
+  <tr> <td> The Return Of The King </td> <td> Elf </td> <td> Male </td> <td align="right"> 510 </td> </tr>
+  <tr> <td> The Return Of The King </td> <td> Hobbit </td> <td> Female </td> <td align="right"> 2 </td> </tr>
+  <tr> <td> The Return Of The King </td> <td> Hobbit </td> <td> Male </td> <td align="right"> 2673 </td> </tr>
+  <tr> <td> The Return Of The King </td> <td> Man </td> <td> Female </td> <td align="right"> 268 </td> </tr>
+  <tr> <td> The Return Of The King </td> <td> Man </td> <td> Male </td> <td align="right"> 2459 </td> </tr>
+   </table>
 
 Notice that tidy data is generally taller and narrower. It doesn't fit nicely on the page. Certain elements get repeated alot, e.g. `Hobbit`. For these reasons, we often instinctively resist __tidy__ data as inefficient or ugly. But, unless and until you're making the final product for a textual presentation of data, ignore your yearning to see the data in a compact form.
 
@@ -130,33 +107,57 @@ With the data in tidy form, it's natural to *get a computer* to do further summa
 
 #### What's the total number of words spoken by male hobbits?
 
-```{r}
+
+```r
 aggregate(Words ~ Race * Gender, data = lotr_tidy, FUN = sum)
 ```
 
-Now it takes just one line of code to compute the word total for both genders of all `Races` across all `Films`. The total number of words spoken by male hobbits is `r lotr_tidy %>% filter(Race == 'Hobbit' & Gender == 'Male') %>% summarize(sum(Words))`. It was important here to have all word counts in a single variable, within a data frame that also included variables for `Race` and `Gender`.
+```
+##     Race Gender Words
+## 1    Elf Female  1743
+## 2 Hobbit Female    16
+## 3    Man Female   669
+## 4    Elf   Male  1994
+## 5 Hobbit   Male  8780
+## 6    Man   Male  8043
+```
+
+Now it takes just one line of code to compute the word total for both genders of all `Races` across all `Films`. The total number of words spoken by male hobbits is 8780. It was important here to have all word counts in a single variable, within a data frame that also included variables for `Race` and `Gender`.
 
 #### Does a certain `Race` dominate a movie? Does the dominant `Race` differ across the movies?
 
 First, we sum across `Gender`, to obtain word counts for the different races by movie.
 
-```{r echo = FALSE, include = FALSE}
-(tmp <- lotr_tidy %>%
-   group_by(Film, Gender) %>%
-   summarize(Words = sum(Words)))
+
+
+
+```r
+(by_race_film <- aggregate(Words ~ Race * Film, data = lotr_tidy, FUN = sum))
 ```
 
-```{r}
-(by_race_film <- aggregate(Words ~ Race * Film, data = lotr_tidy, FUN = sum))
+```
+##     Race                       Film Words
+## 1    Elf The Fellowship Of The Ring  2200
+## 2 Hobbit The Fellowship Of The Ring  3658
+## 3    Man The Fellowship Of The Ring  1995
+## 4    Elf             The Two Towers   844
+## 5 Hobbit             The Two Towers  2463
+## 6    Man             The Two Towers  3990
+## 7    Elf     The Return Of The King   693
+## 8 Hobbit     The Return Of The King  2675
+## 9    Man     The Return Of The King  2727
 ```
 We can stare hard at those numbers to answer the question. But even nicer is to depict the word counts we just computed in a barchart. 
 
-```{r barchart-lotr-words-by-film-race}
+
+```r
 library(ggplot2)
 p <- ggplot(by_race_film, aes(x = Film, y = Words, fill = Race))
 p + geom_bar(stat = "identity", position = "dodge") +
   coord_flip() + guides(fill = guide_legend(reverse=TRUE))
 ```
+
+![](01-intro_files/figure-html/barchart-lotr-words-by-film-race-1.png)<!-- -->
 
 `Hobbits` are featured heavily in The Fellowhip of the Ring, where as `Men` had a lot more screen time in The Two Towers. They were equally prominent in the last movie, The Return of the King.
 
@@ -188,26 +189,5 @@ The figure was made with `ggplot2`, a popular package that implements the Gramma
     - [`tidyr`](https://github.com/hadley/tidyr), an R package to tidy data.
     - R packages by the same author that do heavier lifting in the data reshaping and aggregation department include [`reshape2`](https://github.com/hadley/reshape), [`plyr`](https://github.com/hadley/plyr) and [`dplyr`](https://github.com/hadley/dplyr).
     
-```{r include = FALSE}
-## leaves files behind for lesson on how to tidy
-for(film in c("The Fellowship Of The Ring", "The Two Towers",
-              "The Return Of The King")) {
-  tmp <- data.frame(Film = film, make_untidy_table(film))
-  fname <- file.path("data", paste0(gsub(" ", "_", film), ".csv"))
-  write.table(tmp, fname, quote = FALSE, sep = ",", row.names = FALSE)
-  }
 
-## leaves files behind for exercises re: how to tidy
-for(gender in c("Female", "Male")) {
-  tmp <- lotr_tidy %>% filter(Gender == gender)
-  tmp <- with(tmp,
-              data.frame(Gender = gender,
-                         Film = Film[Race == "Elf"],
-                         Elf = Words[Race == "Elf"],
-                         Hobbit = Words[Race == "Hobbit"],
-                         Man = Words[Race == "Man"]))
-  fname <- file.path("data", paste0(gender, ".csv"))
-  write.table(tmp, fname, quote = FALSE, sep = ",", row.names = FALSE)
-  }
-```
 
