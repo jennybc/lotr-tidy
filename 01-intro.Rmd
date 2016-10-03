@@ -47,7 +47,9 @@ lotr_tidy <- left_join(all_combns, lotr_tidy) %>%
                                         "The Return Of The King")),
          Words = as.integer(Words)) %>% 
   arrange(Film, Race, Gender)
-write_csv(lotr_tidy, file.path("data", "lotr_tidy.csv"))
+## let the version from 02-tidy.Rmd rule the day
+## non-substantive differences in row and/or variable order
+#write_csv(lotr_tidy, file.path("data", "lotr_tidy.csv"))
 ```
 
 ```{r make-and-write-untidy-films, echo = FALSE}
@@ -199,7 +201,6 @@ Our summing over gender to get word counts for combinations of film and race is 
 The figure was made with ggplot2, a popular package that implements the Grammar of Graphics in R.
 
 ### Resources
-
 
   * [Tidy data](http://r4ds.had.co.nz/tidy-data.html) chapter in R for Data Science, by Garrett Grolemund and Hadley Wickham
     - [tidyr](https://github.com/hadley/tidyr) R package

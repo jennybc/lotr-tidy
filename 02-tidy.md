@@ -1,9 +1,9 @@
 02-tidy.Rmd
 ================
 Jenny Bryan
-02 October, 2016
+03 October, 2016
 
-Recall that an important aspect of "writing data for computers" is to make your data **tidy** (see White et al and Wickham in the Resources). There's an emerging consensus on key features of **tidy** data:
+An important aspect of "writing data for computers" is to make your data **tidy**. Key features of **tidy** data:
 
 -   Each column is a variable
 -   Each row is an observation
@@ -13,45 +13,86 @@ But unfortunately, **untidy** data abounds. In fact, we often inflict it on ours
 Import untidy Lord of the Rings data
 ------------------------------------
 
-We will now import the untidy data that was presented in the three film-specific word count tables from [the intro](01-intro.md).
+We now import the untidy data that was presented in the three film-specific word count tables from [the intro](01-intro.md).
 
-I assume that data can be found as three plain text, delimited files, one for each `Film`. How to liberate data from spreadsheets or tables in word processing documents has been covered in *\[TODO\] this other lesson ... LINK*. We bring the data into data frames, one per `Film`, and do a little inspection.
+I assume that data can be found as three plain text, delimited files, one for each film. How to liberate data from spreadsheets or tables in word processing documents is beyond the scope of this tutorial. We bring the data into data frames or tibbles, one per film, and do some inspection.
 
 ``` r
-fship <- read.csv(file.path("data", "The_Fellowship_Of_The_Ring.csv"))
-ttow <- read.csv(file.path("data", "The_Two_Towers.csv"))
-rking <- read.csv(file.path("data", "The_Return_Of_The_King.csv")) 
+library(tidyverse)
+```
+
+    ## Loading tidyverse: ggplot2
+    ## Loading tidyverse: tibble
+    ## Loading tidyverse: tidyr
+    ## Loading tidyverse: readr
+    ## Loading tidyverse: purrr
+    ## Loading tidyverse: dplyr
+
+    ## Conflicts with tidy packages ----------------------------------------------
+
+    ## filter(): dplyr, stats
+    ## lag():    dplyr, stats
+
+``` r
+fship <- read_csv(file.path("data", "The_Fellowship_Of_The_Ring.csv"))
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Film = col_character(),
+    ##   Race = col_character(),
+    ##   Female = col_integer(),
+    ##   Male = col_integer()
+    ## )
+
+``` r
+ttow <- read_csv(file.path("data", "The_Two_Towers.csv"))
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Film = col_character(),
+    ##   Race = col_character(),
+    ##   Female = col_integer(),
+    ##   Male = col_integer()
+    ## )
+
+``` r
+rking <- read_csv(file.path("data", "The_Return_Of_The_King.csv")) 
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Film = col_character(),
+    ##   Race = col_character(),
+    ##   Female = col_integer(),
+    ##   Male = col_integer()
+    ## )
+
+``` r
 rking
 ```
 
-    ##                     Film   Race Female Male
-    ## 1 The Return Of The King    Elf    183  510
-    ## 2 The Return Of The King Hobbit      2 2673
-    ## 3 The Return Of The King    Man    268 2459
-
-``` r
-str(fship)
-```
-
-    ## 'data.frame':    3 obs. of  4 variables:
-    ##  $ Film  : Factor w/ 1 level "The Fellowship Of The Ring": 1 1 1
-    ##  $ Race  : Factor w/ 3 levels "Elf","Hobbit",..: 1 2 3
-    ##  $ Female: int  1229 14 0
-    ##  $ Male  : int  971 3644 1995
+    ## # A tibble: 3 × 4
+    ##                     Film   Race Female  Male
+    ##                    <chr>  <chr>  <int> <int>
+    ## 1 The Return Of The King    Elf    183   510
+    ## 2 The Return Of The King Hobbit      2  2673
+    ## 3 The Return Of The King    Man    268  2459
 
 Collect untidy Lord of the Rings data into a single data frame
 --------------------------------------------------------------
 
-We now have one data frame per `Film`, each with a common set of 4 variables. Step one in tidying this data is to glue them together into one data frame, stacking them up row wise. I'll call this row-binding and use the base function `rbind()`.
+We now have one data frame per film, each with a common set of 4 variables. Step one in tidying this data is to glue them together into one data frame, stacking them up row wise. This is called row binding and we use `dplyr::bind_rows()`.
 
 ``` r
-lotr_untidy <- rbind(fship, ttow, rking)
+lotr_untidy <- bind_rows(fship, ttow, rking)
 str(lotr_untidy)
 ```
 
-    ## 'data.frame':    9 obs. of  4 variables:
-    ##  $ Film  : Factor w/ 3 levels "The Fellowship Of The Ring",..: 1 1 1 2 2 2 3 3 3
-    ##  $ Race  : Factor w/ 3 levels "Elf","Hobbit",..: 1 2 3 1 2 3 1 2 3
+    ## Classes 'tbl_df', 'tbl' and 'data.frame':    9 obs. of  4 variables:
+    ##  $ Film  : chr  "The Fellowship Of The Ring" "The Fellowship Of The Ring" "The Fellowship Of The Ring" "The Two Towers" ...
+    ##  $ Race  : chr  "Elf" "Hobbit" "Man" "Elf" ...
     ##  $ Female: int  1229 14 0 331 0 401 183 2 268
     ##  $ Male  : int  971 3644 1995 513 2463 3589 510 2673 2459
 
@@ -59,30 +100,33 @@ str(lotr_untidy)
 lotr_untidy
 ```
 
-    ##                         Film   Race Female Male
-    ## 1 The Fellowship Of The Ring    Elf   1229  971
-    ## 2 The Fellowship Of The Ring Hobbit     14 3644
-    ## 3 The Fellowship Of The Ring    Man      0 1995
-    ## 4             The Two Towers    Elf    331  513
-    ## 5             The Two Towers Hobbit      0 2463
-    ## 6             The Two Towers    Man    401 3589
-    ## 7     The Return Of The King    Elf    183  510
-    ## 8     The Return Of The King Hobbit      2 2673
-    ## 9     The Return Of The King    Man    268 2459
+    ## # A tibble: 9 × 4
+    ##                         Film   Race Female  Male
+    ##                        <chr>  <chr>  <int> <int>
+    ## 1 The Fellowship Of The Ring    Elf   1229   971
+    ## 2 The Fellowship Of The Ring Hobbit     14  3644
+    ## 3 The Fellowship Of The Ring    Man      0  1995
+    ## 4             The Two Towers    Elf    331   513
+    ## 5             The Two Towers Hobbit      0  2463
+    ## 6             The Two Towers    Man    401  3589
+    ## 7     The Return Of The King    Elf    183   510
+    ## 8     The Return Of The King Hobbit      2  2673
+    ## 9     The Return Of The King    Man    268  2459
 
 Tidy the untidy Lord of the Rings data
 --------------------------------------
 
-We are still violating one of the fundamental principles of **tidy data**. "Word count" is a fundamental variable in our dataset and it's currently spread out over two variables, `Female` and `Male`. Conceptually, we need to gather up the word counts into a single variable and create a new variable, `Gender`, to track whether each count refers to females or males. We use a function from the `tidyr` package to do this.
+We are still violating one of the fundamental principles of **tidy data**. "Word count" is a fundamental variable in our dataset and it's currently spread out over two variables, `Female` and `Male`. Conceptually, we need to gather up the word counts into a single variable and create a new variable, `Gender`, to track whether each count refers to females or males. We use the `gather()` function from the tidyr package to do this.
 
 ``` r
-library(tidyr)
 lotr_tidy <-
   gather(lotr_untidy, key = 'Gender', value = 'Words', Female, Male)
 lotr_tidy
 ```
 
+    ## # A tibble: 18 × 4
     ##                          Film   Race Gender Words
+    ##                         <chr>  <chr>  <chr> <int>
     ## 1  The Fellowship Of The Ring    Elf Female  1229
     ## 2  The Fellowship Of The Ring Hobbit Female    14
     ## 3  The Fellowship Of The Ring    Man Female     0
@@ -112,8 +156,7 @@ Write the tidy data to a delimited file
 Now we write this multi-film, tidy dataset to file for use in various downstream scripts for further analysis and visualization. This would make an excellent file to share on the web with others, providing a tool-agnostic, ready-to-analyze entry point for anyone wishing to play with this data.
 
 ``` r
-write.table(lotr_tidy, file = file.path("data", "lotr_tidy.csv"),
-            quote = FALSE, sep = ",", row.names = FALSE)
+write_csv(lotr_tidy, path = file.path("data", "lotr_tidy.csv"))
 ```
 
 You can inspect this delimited file here: [lotr\_tidy.csv](data/tidy-data/lotr_tidy.csv).
@@ -128,21 +171,21 @@ The word count data is given in these two **untidy** and gender-specific files:
 
 Write an R script that reads them in and writes a single tidy data frame to file. Literally, reproduce the `lotr_tidy` data frame and the `lotr_tidy.csv` data file from above.
 
-Write R code to compute the total number of words spoken by each `Race` across the entire trilogy. Do it two ways:
+Write R code to compute the total number of words spoken by each race across the entire trilogy. Do it two ways:
 
--   Using `Film`-specific or `Gender`-specific, untidy data frames as the input data.
+-   Using film-specific or gender-specific, untidy data frames as the input data.
 -   Using the `lotr_tidy` data frame as input.
 
 Reflect on the process of writing this code and on the code itself. Which is easier to write? Easier to read?
 
-Write R code to compute the total number of words spoken in each `Film`. Do this by copying and modifying your own code for totalling words by `Race`. Which approach is easier to modify and repurpose -- the one based on multiple, untidy data frames or the tidy data?
+Write R code to compute the total number of words spoken in each film. Do this by copying and modifying your own code for totalling words by race. Which approach is easier to modify and repurpose -- the one based on multiple, untidy data frames or the tidy data?
 
 Take home message
 -----------------
 
-It is untidy to have have data parcelled out across different files or data frames. We used `rbind()` above to combine `Film`-specific data frames into one large data frame.
+It is untidy to have have data parcelled out across different files or data frames. We used `dplyr::bind_rows()` above to combine film-specific data frames into one large data frame.
 
-It is untidy to have a conceptual variable, e.g. "word count", spread across multiple variables, such as word counts for males and word counts for females. We used the `gather()` function from the `tidyr` package to stack up all the word counts into a single variable, create a new variable to convey male vs. female, and do the replication needed for the other variables.
+It is untidy to have a conceptual variable, e.g. "word count", spread across multiple variables, such as word counts for males and word counts for females. We used the `gather()` function from the tidyr package to stack up all the word counts into a single variable, create a new variable to convey male vs. female, and do the replication needed for the other variables.
 
 Many data analytic projects will benefit from a script that marshals data from different files, tidies the data, and writes a clean result to file for further analysis.
 
@@ -157,9 +200,11 @@ In the [optional bonus content](03-tidy-bonus-content.md), I show how to tidy th
 
 ### Resources
 
+-   [Tidy data](http://r4ds.had.co.nz/tidy-data.html) chapter in R for Data Science, by Garrett Grolemund and Hadley Wickham
+    -   [tidyr](https://github.com/hadley/tidyr) R package
+    -   The tidyverse meta-package, within which `tidyr` lives: [tidyverse](https://github.com/hadley/tidyversee).
 -   [Bad Data Handbook](http://shop.oreilly.com/product/0636920024422.do) by By Q. Ethan McCallum, published by O'Reilly.
     -   Chapter 3: Data Intended for Human Consumption, Not Machine Consumption by Paul Murrell.
 -   Nine simple ways to make it easier to (re)use your data by EP White, E Baldridge, ZT Brym, KJ Locey, DJ McGlinn, SR Supp. *Ideas in Ecology and Evolution* 6(2): 1–10, 2013. <doi:10.4033/iee.2013.6b.6.f> <http://library.queensu.ca/ojs/index.php/IEE/article/view/4608>
+    -   See the section "Use standard table formats"
 -   Tidy data by Hadley Wickham. Journal of Statistical Software. Vol. 59, Issue 10, Sep 2014. <http://www.jstatsoft.org/v59/i10>
-    -   [`tidyr`](https://github.com/hadley/tidyr), an R package to tidy data.
-    -   R packages by the same author that do heavier lifting in the data reshaping and aggregation department include [`reshape2`](https://github.com/hadley/reshape), [`plyr`](https://github.com/hadley/plyr) and [`dplyr`](https://github.com/hadley/dplyr).
