@@ -1,0 +1,36 @@
+---
+author: "Jenny Bryan"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: github_document
+---
+
+```{r setup, include = FALSE, cache = FALSE}
+knitr::opts_chunk$set(error = TRUE, collapse = TRUE, comment = "#>")
+```
+
+Enough about tidy data. How do I make it messy?
+
+No prose yet.
+
+```{r}
+library(tidyverse)
+lotr_tidy <- read_csv(file.path("data", "lotr_tidy.csv"))
+
+lotr_tidy
+
+## practicing with spread: let's get one variable per Race
+lotr_tidy %>% 
+  spread(key = Race, value = Words)
+
+## practicing with spread: let's get one variable per Gender
+lotr_tidy %>% 
+  spread(key = Gender, value = Words)
+
+## practicing with spread ... and unite: let's get one variable per combo of Race and Gender
+lotr_tidy %>% 
+  unite(Race_Gender, Race, Gender) %>% 
+  spread(key = Race_Gender, value = Words)
+
+## to do: show splitting into film-specific data frames?
+```
+
