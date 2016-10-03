@@ -192,11 +192,12 @@ If you're skeptical about any of the above claims, it would be interesting to ge
 
 In [the next lesson](02-tidy.md), we'll show how to tidy this data.
 
-Our summing over gender to get word counts for combinations of film and race is an example of __data aggregation__. Learn more at:
+Our summing over gender to get word counts for combinations of film and race is an example of __data aggregation__. It's a frequent companion task with tidying and reshaping. Learn more at:
 
   * Simple aggregation with the tidyverse: `dplyr::count()` and `dplyr::group_by()` + `dplyr::summarize()`, [STAT 545 coverage](http://stat545.com/block010_dplyr-end-single-table.html#group_by-is-a-mighty-weapon), [Data transformation](http://r4ds.had.co.nz/transform.html) chapter in R for Data Science.
   * General aggregation with the tidyverse: [STAT 545 coverage](http://stat545.com/block024_group-nest-split-map.html) of general Split-Apply-Combine via nested data frames.
   * Simple aggregation with base R: `aggregate()`.
+  * General aggregation with base R: `tapply()`, `split()`, `by()`, etc.
 
 The figure was made with ggplot2, a popular package that implements the Grammar of Graphics in R.
 
@@ -204,7 +205,7 @@ The figure was made with ggplot2, a popular package that implements the Grammar 
 
   * [Tidy data](http://r4ds.had.co.nz/tidy-data.html) chapter in R for Data Science, by Garrett Grolemund and Hadley Wickham
     - [tidyr](https://github.com/hadley/tidyr) R package
-    - The tidyverse meta-package, within which `tidyr` lives: [tidyverse](https://github.com/hadley/tidyversee).
+    - The tidyverse meta-package, within which `tidyr` lives: [tidyverse](https://github.com/hadley/tidyverse).
   * [Bad Data Handbook](http://shop.oreilly.com/product/0636920024422.do) by By Q. Ethan McCallum, published by O'Reilly.
     - Chapter 3: Data Intended for Human Consumption, Not Machine Consumption by Paul Murrell.
   * Nine simple ways to make it easier to (re)use your data by EP White, E Baldridge, ZT Brym, KJ Locey, DJ McGlinn, SR Supp. *Ideas in Ecology and Evolution* 6(2): 1–10, 2013. doi:10.4033/iee.2013.6b.6.f <http://library.queensu.ca/ojs/index.php/IEE/article/view/4608>
