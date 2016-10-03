@@ -2,9 +2,7 @@
 title: "02-tidy.Rmd"
 author: "Jenny Bryan"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output:
-  html_document:
-    keep_md: TRUE
+output: github_document
 ---
 
 Recall that an important aspect of "writing data for computers" is to make your data __tidy__ (see White et al and Wickham in the Resources). There's an emerging consensus on key features of __tidy__ data:
