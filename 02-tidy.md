@@ -1,11 +1,6 @@
----
-title: "02-tidy.Rmd"
-author: "Jenny Bryan"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
-output:
-  html_document:
-    keep_md: TRUE
----
+# 02-tidy.Rmd
+Jenny Bryan  
+`r format(Sys.time(), '%d %B, %Y')`  
 
 Recall that an important aspect of "writing data for computers" is to make your data __tidy__ (see White et al and Wickham in the Resources). There's an emerging consensus on key features of __tidy__ data:
 
@@ -20,32 +15,99 @@ We will now import the untidy data that was presented in the three film-specific
 
 I assume that data can be found as three plain text, delimited files, one for each `Film`. How to liberate data from spreadsheets or tables in word processing documents has been covered in *[TODO] this other lesson ... LINK*. We bring the data into data frames, one per `Film`, and do a little inspection.
 
-```{r}
+
+```r
 fship <- read.csv(file.path("data", "The_Fellowship_Of_The_Ring.csv"))
 ttow <- read.csv(file.path("data", "The_Two_Towers.csv"))
 rking <- read.csv(file.path("data", "The_Return_Of_The_King.csv")) 
 rking
+```
+
+```
+##                     Film   Race Female Male
+## 1 The Return Of The King    Elf    183  510
+## 2 The Return Of The King Hobbit      2 2673
+## 3 The Return Of The King    Man    268 2459
+```
+
+```r
 str(fship)
+```
+
+```
+## 'data.frame':	3 obs. of  4 variables:
+##  $ Film  : Factor w/ 1 level "The Fellowship Of The Ring": 1 1 1
+##  $ Race  : Factor w/ 3 levels "Elf","Hobbit",..: 1 2 3
+##  $ Female: int  1229 14 0
+##  $ Male  : int  971 3644 1995
 ```
 
 ## Collect untidy Lord of the Rings data into a single data frame
 
 We now have one data frame per `Film`, each with a common set of 4 variables. Step one in tidying this data is to glue them together into one data frame, stacking them up row wise. I'll call this row-binding and use the base function `rbind()`.
 
-```{r}
+
+```r
 lotr_untidy <- rbind(fship, ttow, rking)
 str(lotr_untidy)
+```
+
+```
+## 'data.frame':	9 obs. of  4 variables:
+##  $ Film  : Factor w/ 3 levels "The Fellowship Of The Ring",..: 1 1 1 2 2 2 3 3 3
+##  $ Race  : Factor w/ 3 levels "Elf","Hobbit",..: 1 2 3 1 2 3 1 2 3
+##  $ Female: int  1229 14 0 331 0 401 183 2 268
+##  $ Male  : int  971 3644 1995 513 2463 3589 510 2673 2459
+```
+
+```r
 lotr_untidy
+```
+
+```
+##                         Film   Race Female Male
+## 1 The Fellowship Of The Ring    Elf   1229  971
+## 2 The Fellowship Of The Ring Hobbit     14 3644
+## 3 The Fellowship Of The Ring    Man      0 1995
+## 4             The Two Towers    Elf    331  513
+## 5             The Two Towers Hobbit      0 2463
+## 6             The Two Towers    Man    401 3589
+## 7     The Return Of The King    Elf    183  510
+## 8     The Return Of The King Hobbit      2 2673
+## 9     The Return Of The King    Man    268 2459
 ```
 
 ## Tidy the untidy Lord of the Rings data
 
 We are still violating one of the fundamental principles of __tidy data__. "Word count" is a fundamental variable in our dataset and it's currently spread out over two variables, `Female` and `Male`. Conceptually, we need to gather up the word counts into a single variable and create a new variable, `Gender`, to track whether each count refers to females or males. We use a function from the `tidyr` package to do this.
-```{r}
+
+```r
 library(tidyr)
 lotr_tidy <-
   gather(lotr_untidy, key = 'Gender', value = 'Words', Female, Male)
 lotr_tidy
+```
+
+```
+##                          Film   Race Gender Words
+## 1  The Fellowship Of The Ring    Elf Female  1229
+## 2  The Fellowship Of The Ring Hobbit Female    14
+## 3  The Fellowship Of The Ring    Man Female     0
+## 4              The Two Towers    Elf Female   331
+## 5              The Two Towers Hobbit Female     0
+## 6              The Two Towers    Man Female   401
+## 7      The Return Of The King    Elf Female   183
+## 8      The Return Of The King Hobbit Female     2
+## 9      The Return Of The King    Man Female   268
+## 10 The Fellowship Of The Ring    Elf   Male   971
+## 11 The Fellowship Of The Ring Hobbit   Male  3644
+## 12 The Fellowship Of The Ring    Man   Male  1995
+## 13             The Two Towers    Elf   Male   513
+## 14             The Two Towers Hobbit   Male  2463
+## 15             The Two Towers    Man   Male  3589
+## 16     The Return Of The King    Elf   Male   510
+## 17     The Return Of The King Hobbit   Male  2673
+## 18     The Return Of The King    Man   Male  2459
 ```
 
 Tidy data ... mission accomplished!
@@ -56,7 +118,8 @@ To explain our call to `gather()` above: we gathered the *values* in variables `
 
 Now we write this multi-film, tidy dataset to file for use in various downstream scripts for further analysis and visualization. This would make an excellent file to share on the web with others, providing a tool-agnostic, ready-to-analyze entry point for anyone wishing to play with this data.
 
-```{r}
+
+```r
 write.table(lotr_tidy, file = file.path("data", "lotr_tidy.csv"),
             quote = FALSE, sep = ",", row.names = FALSE)
 ```
