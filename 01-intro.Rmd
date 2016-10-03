@@ -5,9 +5,77 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: github_document
 ---
 
+```{r setup, include = FALSE, cache = FALSE}
+knitr::opts_chunk$set(error = TRUE, collapse = TRUE, comment = "#>")
+```
+
+```{r prepare-tidy-data, include = FALSE}
+library(tidyverse)
+
+if (!file.exists(file.path("data", "lotr_clean.tsv"))) {
+  download.file(paste0("https://raw.githubusercontent.com/jennybc/",
+                       "lotr/master/lotr_clean.tsv"), 
+                destfile = file.path("data", "lotr_clean.tsv"),
+                method = "curl")
+}
+lotr_dat <- read_tsv(file.path("data", "lotr_clean.tsv"), col_types = cols(
+  Film = col_character(),
+  Chapter = col_character(),
+  Character = col_character(),
+  Race = col_character(),
+  Words = col_integer()
+))
+
+females <- c("Galadriel", "Arwen", "Lobelia Sackville-Baggins", "Rosie",
+             "Mrs. Bracegirdle", "Eowyn", "Freda", "Rohan Maiden")
+lotr_dat <-
+  mutate(lotr_dat,
+         Gender = ifelse(Character %in% females, "Female", "Male"))
+
+(lotr_tidy <- lotr_dat %>%
+    filter(Race %in% c("Elf", "Hobbit", "Man")) %>%
+    group_by(Film, Gender, Race) %>%
+    summarize(Words = sum(Words)))
+(all_combns <- lotr_tidy %>% 
+    select(-Words) %>% 
+    map(unique) %>% 
+    crossing_())
+lotr_tidy <- left_join(all_combns, lotr_tidy) %>% 
+  replace_na(list(Words = 0)) %>% 
+  mutate(Film = factor(Film, levels = c("The Fellowship Of The Ring",
+                                        "The Two Towers",
+                                        "The Return Of The King")),
+         Words = as.integer(Words)) %>% 
+  arrange(Film, Race, Gender)
+write_csv(lotr_tidy, file.path("data", "lotr_tidy.csv"))
+```
+
+```{r make-and-write-untidy-films, echo = FALSE}
+untidy_films <- lotr_tidy %>% 
+  split(.$Film) %>%
+  map(~ spread(.x, Gender, Words))
+## leaves files behind for lesson on how to tidy
+walk2(untidy_films,
+      file.path("data", paste0(gsub(" ", "_", names(untidy_films)), ".csv")),
+      ~ write_csv(.x, .y))
+## remove film name
+untidy_films <- untidy_films %>% 
+  map(~select(.x, -Film))
+```
+
+```{r make-and-write-untidy-gender, include = FALSE}
+## leaves files behind for exercises re: how to tidy
+untidy_gender <- lotr_tidy %>% 
+  split(.$Gender) %>% 
+  map(~ spread(.x, key = Race, value = Words)) %>% 
+  map(~ select(.x, Gender, everything()))
+walk2(untidy_gender, file.path("data", paste0(names(untidy_gender), ".csv")),
+      ~ write_csv(.x, .y))
+```
+
 <blockquote class="twitter-tweet" lang="en"><p>If I had one thing to tell biologists learning bioinformatics, it would be &quot;write code for humans, write data for computers&quot;.</p>&mdash; Vince Buffalo (@vsbuffalo) <a href="https://twitter.com/vsbuffalo/statuses/358699162679787521">July 20, 2013</a></blockquote>
 
-An important aspect of "writing data for computers" is to make your data __tidy__ (see White et al and Wickham in the Resources). There's an emerging consensus on key features of __tidy__ data:
+An important aspect of "writing data for computers" is to make your data __tidy__. Key features of __tidy__ data:
 
   * Each column is a variable
   * Each row is an observation
@@ -18,80 +86,30 @@ If you are struggling to make a figure, for example, stop and think hard about w
 
 I will give you a concrete example of some untidy data I created from [this data from the Lord of the Rings Trilogy](https://github.com/jennybc/lotr).
 
-```{r make-tidy-data-untidy, include = FALSE}
-library(knitr)
-library(dplyr)
-library(tidyr)
+```{r load-xtable, echo = FALSE}
 library(xtable)
-
-if (!file.exists(file.path("data", "lotr_clean.tsv"))) {
-  download.file(paste0("https://raw.githubusercontent.com/jennybc/",
-                       "lotr/master/lotr_clean.tsv"), 
-                destfile = file.path("data", "lotr_clean.tsv"),
-                method = "curl")
-}
-lotr_dat <- tbl_df(read.delim(file.path("data", "lotr_clean.tsv"),
-                              stringsAsFactor = FALSE))
-females <- c("Galadriel", "Arwen", "Lobelia Sackville-Baggins", "Rosie",
-             "Mrs. Bracegirdle", "Eowyn", "Freda", "Rohan Maiden")
-lotr_dat <-
-  mutate(lotr_dat,
-         Film = factor(Film, levels = c("The Fellowship Of The Ring",
-                                        "The Two Towers",
-                                        "The Return Of The King")),
-         Gender = factor(ifelse(Character %in% females, "Female", "Male")),
-         Race = factor(Race))
-(lotr_tidy <- lotr_dat %>%
-   filter(Race %in% c("Elf", "Hobbit", "Man")) %>%
-   droplevels %>%
-   group_by(Film, Gender, Race) %>%
-   summarize(Words = sum(Words)))
-(all_combns <- with(lotr_tidy,
-                    expand.grid(Film = levels(Film), Race = levels(Race),
-                                Gender = levels(Gender))))
-lotr_tidy <- left_join(all_combns, lotr_tidy)
-## 2014-11-04 working around a dplyr join bug re factor levels
-lotr_tidy <- lotr_tidy %>%
-  mutate(Film = factor(Film, levels = c("The Fellowship Of The Ring",
-                                        "The Two Towers",
-                                        "The Return Of The King")))
-lotr_tidy[is.na(lotr_tidy)] <- 0
-lotr_tidy
-lotr_tidy <- lotr_tidy %>% arrange(Film, Race, Gender)
-```
-
-```{r echo = FALSE}
-make_untidy_table <- function(film) {
-  tmp <- lotr_tidy %>%
-    filter(Film == film) %>%
-    select(-Film)
-  with(tmp,
-       data.frame(Race = Race[Gender == "Female"],
-                  Female = Words[Gender == "Female"],
-                  Male = Words[Gender == "Male"]))
-  }
 ```
 <table border = 1>
 <tr>
 <td>
-```{r results='asis', echo=FALSE}
-print(xtable(make_untidy_table("The Fellowship Of The Ring"),
+```{r results = 'asis', echo = FALSE}
+print(xtable(untidy_films[["The Fellowship Of The Ring"]],
              digits = 0, caption = "The Fellowship Of The Ring"),
-      caption.placement = "top", include.rownames = FALSE, type='html')
+      caption.placement = "top", include.rownames = FALSE, type = 'html')
 ```
 </td>
 <td>
-```{r results='asis', echo=FALSE}
-print(xtable(make_untidy_table("The Two Towers"),
+```{r results = 'asis', echo = FALSE}
+print(xtable(untidy_films[["The Two Towers"]],
              digits = 0, caption = "The Two Towers"),
-      caption.placement = "top", include.rownames = FALSE, type='html')
+      caption.placement = "top", include.rownames = FALSE, type = 'html')
 ```
 </td>
 <td>
-```{r results='asis', echo=FALSE}
-print(xtable(make_untidy_table("The Return Of The King"),
+```{r results = 'asis', echo = FALSE}
+print(xtable(untidy_films[["The Return Of The King"]],
              digits = 0, caption = "The Return Of The King"),
-      caption.placement = "top", include.rownames = FALSE, type='html')
+      caption.placement = "top", include.rownames = FALSE, type = 'html')
 ```
 </td>
 </tr>
@@ -117,7 +135,7 @@ How well does your approach scale if there were many more movies or if I provide
 Here's how the same data looks in tidy form:
 
 ```{r echo = FALSE, results = 'asis'}
-print(xtable(lotr_tidy, digits = 0), include.rownames = FALSE, type='html')
+print(xtable(lotr_tidy, digits = 0), include.rownames = FALSE, type = 'html')
 ```
 
 Notice that tidy data is generally taller and narrower. It doesn't fit nicely on the page. Certain elements get repeated alot, e.g. `Hobbit`. For these reasons, we often instinctively resist __tidy__ data as inefficient or ugly. But, unless and until you're making the final product for a textual presentation of data, ignore your yearning to see the data in a compact form.
@@ -129,36 +147,36 @@ With the data in tidy form, it's natural to *get a computer* to do further summa
 #### What's the total number of words spoken by male hobbits?
 
 ```{r}
-aggregate(Words ~ Race * Gender, data = lotr_tidy, FUN = sum)
+lotr_tidy %>% 
+  count(Gender, Race, wt = Words)
+## outside the tidyverse:
+#aggregate(Words ~ Gender, data = lotr_tidy, FUN = sum)
 ```
 
-Now it takes just one line of code to compute the word total for both genders of all `Races` across all `Films`. The total number of words spoken by male hobbits is `r lotr_tidy %>% filter(Race == 'Hobbit' & Gender == 'Male') %>% summarize(sum(Words))`. It was important here to have all word counts in a single variable, within a data frame that also included variables for `Race` and `Gender`.
+Now it takes a small bit of code to compute the word total for both genders of all races across all films. The total number of words spoken by male hobbits is `r lotr_tidy %>% filter(Race == 'Hobbit', Gender == 'Male') %>% summarize(sum(Words))`. It was important here to have all word counts in a single variable, within a data frame that also included a variables for gender and race.
 
-#### Does a certain `Race` dominate a movie? Does the dominant `Race` differ across the movies?
+#### Does a certain race dominate a movie? Does the dominant race differ across the movies?
 
-First, we sum across `Gender`, to obtain word counts for the different races by movie.
-
-```{r echo = FALSE, include = FALSE}
-(tmp <- lotr_tidy %>%
-   group_by(Film, Gender) %>%
-   summarize(Words = sum(Words)))
-```
+First, we sum across gender, to obtain word counts for the different races by movie.
 
 ```{r}
-(by_race_film <- aggregate(Words ~ Race * Film, data = lotr_tidy, FUN = sum))
+(by_race_film <- lotr_tidy %>% 
+   group_by(Film, Race) %>% 
+   summarize(Words = sum(Words)))
+## outside the tidyverse:
+#(by_race_film <- aggregate(Words ~ Race * Film, data = lotr_tidy, FUN = sum))
 ```
 We can stare hard at those numbers to answer the question. But even nicer is to depict the word counts we just computed in a barchart. 
 
 ```{r barchart-lotr-words-by-film-race}
-library(ggplot2)
 p <- ggplot(by_race_film, aes(x = Film, y = Words, fill = Race))
 p + geom_bar(stat = "identity", position = "dodge") +
-  coord_flip() + guides(fill = guide_legend(reverse=TRUE))
+  coord_flip() + guides(fill = guide_legend(reverse = TRUE))
 ```
 
-`Hobbits` are featured heavily in The Fellowhip of the Ring, where as `Men` had a lot more screen time in The Two Towers. They were equally prominent in the last movie, The Return of the King.
+Hobbits are featured heavily in The Fellowhip of the Ring, where as Men had a lot more screen time in The Two Towers. They were equally prominent in the last movie, The Return of the King.
 
-Again, it was important to have all the data in a single data frame, all word counts in a single variable, and associated variables for `Film` and `Race`.
+Again, it was important to have all the data in a single data frame, all word counts in a single variable, and associated variables for Film and Race.
 
 ## Take home message
 
@@ -166,46 +184,28 @@ Having the data in __tidy__ form was a key enabler for our data aggregations and
 
 Tidy data is integral to efficient data analysis and visualization.
 
-If you're skeptical about any of the above claims, it would be interesting to get the requested word counts, the barchart, or the insight gained from the chart *without* tidying or plotting the data. And imagine redoing all of that on the full dataset, which includes 3 more `Races`, e.g. `Dwarves`.
+If you're skeptical about any of the above claims, it would be interesting to get the requested word counts, the barchart, or the insight gained from the chart *without* tidying or plotting the data. And imagine redoing all of that on the full dataset, which includes 3 more Races, e.g. Dwarves.
 
 ### Where to next?
 
 In [the next lesson](02-tidy.md), we'll show how to tidy this data.
 
-Our summing over `Gender` to get word counts for `Film * Race` was an example of __data aggregation__. The base function `aggregate()` does simple aggregation. For more flexibility, check out the packages `plyr` and `dplyr`. *point to other lessons when/if they exist?*
+Our summing over gender to get word counts for combinations of film and race is an example of __data aggregation__. Learn more at:
 
-The figure was made with `ggplot2`, a popular package that implements the Grammar of Graphics in R.
+  * Simple aggregation with the tidyverse: `dplyr::count()` and `dplyr::group_by()` + `dplyr::summarize()`, [STAT 545 coverage](http://stat545.com/block010_dplyr-end-single-table.html#group_by-is-a-mighty-weapon), [Data transformation](http://r4ds.had.co.nz/transform.html) chapter in R for Data Science.
+  * General aggregation with the tidyverse: [STAT 545 coverage](http://stat545.com/block024_group-nest-split-map.html) of general Split-Apply-Combine via nested data frames.
+  * Simple aggregation with base R: `aggregate()`.
+
+The figure was made with ggplot2, a popular package that implements the Grammar of Graphics in R.
 
 ### Resources
 
+
+  * [Tidy data](http://r4ds.had.co.nz/tidy-data.html) chapter in R for Data Science, by Garrett Grolemund and Hadley Wickham
+    - [tidyr](https://github.com/hadley/tidyr) R package
+    - The tidyverse meta-package, within which `tidyr` lives: [tidyverse](https://github.com/hadley/tidyversee).
   * [Bad Data Handbook](http://shop.oreilly.com/product/0636920024422.do) by By Q. Ethan McCallum, published by O'Reilly.
     - Chapter 3: Data Intended for Human Consumption, Not Machine Consumption by Paul Murrell.
   * Nine simple ways to make it easier to (re)use your data by EP White, E Baldridge, ZT Brym, KJ Locey, DJ McGlinn, SR Supp. *Ideas in Ecology and Evolution* 6(2): 1–10, 2013. doi:10.4033/iee.2013.6b.6.f <http://library.queensu.ca/ojs/index.php/IEE/article/view/4608>
     - See the section "Use standard table formats"
   * Tidy data by Hadley Wickham. Journal of Statistical Software. Vol. 59, Issue 10, Sep 2014. <http://www.jstatsoft.org/v59/i10>
-    - [`tidyr`](https://github.com/hadley/tidyr), an R package to tidy data.
-    - R packages by the same author that do heavier lifting in the data reshaping and aggregation department include [`reshape2`](https://github.com/hadley/reshape), [`plyr`](https://github.com/hadley/plyr) and [`dplyr`](https://github.com/hadley/dplyr).
-    
-```{r include = FALSE}
-## leaves files behind for lesson on how to tidy
-for(film in c("The Fellowship Of The Ring", "The Two Towers",
-              "The Return Of The King")) {
-  tmp <- data.frame(Film = film, make_untidy_table(film))
-  fname <- file.path("data", paste0(gsub(" ", "_", film), ".csv"))
-  write.table(tmp, fname, quote = FALSE, sep = ",", row.names = FALSE)
-  }
-
-## leaves files behind for exercises re: how to tidy
-for(gender in c("Female", "Male")) {
-  tmp <- lotr_tidy %>% filter(Gender == gender)
-  tmp <- with(tmp,
-              data.frame(Gender = gender,
-                         Film = Film[Race == "Elf"],
-                         Elf = Words[Race == "Elf"],
-                         Hobbit = Words[Race == "Hobbit"],
-                         Man = Words[Race == "Man"]))
-  fname <- file.path("data", paste0(gender, ".csv"))
-  write.table(tmp, fname, quote = FALSE, sep = ",", row.names = FALSE)
-  }
-```
-

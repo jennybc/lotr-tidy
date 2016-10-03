@@ -1,7 +1,7 @@
 01-intro.Rmd
 ================
 Jenny Bryan
-02 October, 2016
+03 October, 2016
 
 <blockquote class="twitter-tweet" lang="en">
 <p>
@@ -9,7 +9,7 @@ If I had one thing to tell biologists learning bioinformatics, it would be "writ
 </p>
 — Vince Buffalo (@vsbuffalo) <a href="https://twitter.com/vsbuffalo/statuses/358699162679787521">July 20, 2013</a>
 </blockquote>
-An important aspect of "writing data for computers" is to make your data **tidy** (see White et al and Wickham in the Resources). There's an emerging consensus on key features of **tidy** data:
+An important aspect of "writing data for computers" is to make your data **tidy**. Key features of **tidy** data:
 
 -   Each column is a variable
 -   Each row is an observation
@@ -25,7 +25,7 @@ I will give you a concrete example of some untidy data I created from [this data
 <tr>
 <td>
 <!-- html table generated in R 3.3.1 by xtable 1.8-2 package -->
-<!-- Sun Oct  2 21:43:44 2016 -->
+<!-- Mon Oct  3 00:02:12 2016 -->
 <table border="1">
 <caption align="top">
 The Fellowship Of The Ring
@@ -78,7 +78,7 @@ Man
 </td>
 <td>
 <!-- html table generated in R 3.3.1 by xtable 1.8-2 package -->
-<!-- Sun Oct  2 21:43:44 2016 -->
+<!-- Mon Oct  3 00:02:12 2016 -->
 <table border="1">
 <caption align="top">
 The Two Towers
@@ -131,7 +131,7 @@ Man
 </td>
 <td>
 <!-- html table generated in R 3.3.1 by xtable 1.8-2 package -->
-<!-- Sun Oct  2 21:43:44 2016 -->
+<!-- Mon Oct  3 00:02:12 2016 -->
 <table border="1">
 <caption align="top">
 The Return Of The King
@@ -206,17 +206,17 @@ Tidy Lord of the Rings data
 Here's how the same data looks in tidy form:
 
 <!-- html table generated in R 3.3.1 by xtable 1.8-2 package -->
-<!-- Sun Oct  2 21:43:44 2016 -->
+<!-- Mon Oct  3 00:02:12 2016 -->
 <table border="1">
 <tr>
 <th>
 Film
 </th>
 <th>
-Race
+Gender
 </th>
 <th>
-Gender
+Race
 </th>
 <th>
 Words
@@ -227,10 +227,10 @@ Words
 The Fellowship Of The Ring
 </td>
 <td>
-Elf
+Female
 </td>
 <td>
-Female
+Elf
 </td>
 <td align="right">
 1229
@@ -241,10 +241,10 @@ Female
 The Fellowship Of The Ring
 </td>
 <td>
-Elf
+Male
 </td>
 <td>
-Male
+Elf
 </td>
 <td align="right">
 971
@@ -255,10 +255,10 @@ Male
 The Fellowship Of The Ring
 </td>
 <td>
-Hobbit
+Female
 </td>
 <td>
-Female
+Hobbit
 </td>
 <td align="right">
 14
@@ -269,10 +269,10 @@ Female
 The Fellowship Of The Ring
 </td>
 <td>
-Hobbit
+Male
 </td>
 <td>
-Male
+Hobbit
 </td>
 <td align="right">
 3644
@@ -283,10 +283,10 @@ Male
 The Fellowship Of The Ring
 </td>
 <td>
-Man
+Female
 </td>
 <td>
-Female
+Man
 </td>
 <td align="right">
 0
@@ -297,10 +297,10 @@ Female
 The Fellowship Of The Ring
 </td>
 <td>
-Man
+Male
 </td>
 <td>
-Male
+Man
 </td>
 <td align="right">
 1995
@@ -311,10 +311,10 @@ Male
 The Two Towers
 </td>
 <td>
-Elf
+Female
 </td>
 <td>
-Female
+Elf
 </td>
 <td align="right">
 331
@@ -325,10 +325,10 @@ Female
 The Two Towers
 </td>
 <td>
-Elf
+Male
 </td>
 <td>
-Male
+Elf
 </td>
 <td align="right">
 513
@@ -339,10 +339,10 @@ Male
 The Two Towers
 </td>
 <td>
-Hobbit
+Female
 </td>
 <td>
-Female
+Hobbit
 </td>
 <td align="right">
 0
@@ -353,10 +353,10 @@ Female
 The Two Towers
 </td>
 <td>
-Hobbit
+Male
 </td>
 <td>
-Male
+Hobbit
 </td>
 <td align="right">
 2463
@@ -367,10 +367,10 @@ Male
 The Two Towers
 </td>
 <td>
-Man
+Female
 </td>
 <td>
-Female
+Man
 </td>
 <td align="right">
 401
@@ -381,10 +381,10 @@ Female
 The Two Towers
 </td>
 <td>
-Man
+Male
 </td>
 <td>
-Male
+Man
 </td>
 <td align="right">
 3589
@@ -395,10 +395,10 @@ Male
 The Return Of The King
 </td>
 <td>
-Elf
+Female
 </td>
 <td>
-Female
+Elf
 </td>
 <td align="right">
 183
@@ -409,10 +409,10 @@ Female
 The Return Of The King
 </td>
 <td>
-Elf
+Male
 </td>
 <td>
-Male
+Elf
 </td>
 <td align="right">
 510
@@ -423,10 +423,10 @@ Male
 The Return Of The King
 </td>
 <td>
-Hobbit
+Female
 </td>
 <td>
-Female
+Hobbit
 </td>
 <td align="right">
 2
@@ -437,10 +437,10 @@ Female
 The Return Of The King
 </td>
 <td>
-Hobbit
+Male
 </td>
 <td>
-Male
+Hobbit
 </td>
 <td align="right">
 2673
@@ -451,10 +451,10 @@ Male
 The Return Of The King
 </td>
 <td>
-Man
+Female
 </td>
 <td>
-Female
+Man
 </td>
 <td align="right">
 268
@@ -465,10 +465,10 @@ Female
 The Return Of The King
 </td>
 <td>
-Man
+Male
 </td>
 <td>
-Male
+Man
 </td>
 <td align="right">
 2459
@@ -485,52 +485,64 @@ With the data in tidy form, it's natural to *get a computer* to do further summa
 #### What's the total number of words spoken by male hobbits?
 
 ``` r
-aggregate(Words ~ Race * Gender, data = lotr_tidy, FUN = sum)
+lotr_tidy %>% 
+  count(Gender, Race, wt = Words)
+#> Source: local data frame [6 x 3]
+#> Groups: Gender [?]
+#> 
+#>   Gender   Race     n
+#>    <chr>  <chr> <int>
+#> 1 Female    Elf  1743
+#> 2 Female Hobbit    16
+#> 3 Female    Man   669
+#> 4   Male    Elf  1994
+#> 5   Male Hobbit  8780
+#> 6   Male    Man  8043
+## outside the tidyverse:
+#aggregate(Words ~ Gender, data = lotr_tidy, FUN = sum)
 ```
 
-    ##     Race Gender Words
-    ## 1    Elf Female  1743
-    ## 2 Hobbit Female    16
-    ## 3    Man Female   669
-    ## 4    Elf   Male  1994
-    ## 5 Hobbit   Male  8780
-    ## 6    Man   Male  8043
+Now it takes a small bit of code to compute the word total for both genders of all races across all films. The total number of words spoken by male hobbits is 8780. It was important here to have all word counts in a single variable, within a data frame that also included a variables for gender and race.
 
-Now it takes just one line of code to compute the word total for both genders of all `Races` across all `Films`. The total number of words spoken by male hobbits is 8780. It was important here to have all word counts in a single variable, within a data frame that also included variables for `Race` and `Gender`.
+#### Does a certain race dominate a movie? Does the dominant race differ across the movies?
 
-#### Does a certain `Race` dominate a movie? Does the dominant `Race` differ across the movies?
-
-First, we sum across `Gender`, to obtain word counts for the different races by movie.
+First, we sum across gender, to obtain word counts for the different races by movie.
 
 ``` r
-(by_race_film <- aggregate(Words ~ Race * Film, data = lotr_tidy, FUN = sum))
+(by_race_film <- lotr_tidy %>% 
+   group_by(Film, Race) %>% 
+   summarize(Words = sum(Words)))
+#> Source: local data frame [9 x 3]
+#> Groups: Film [?]
+#> 
+#>                         Film   Race Words
+#>                       <fctr>  <chr> <int>
+#> 1 The Fellowship Of The Ring    Elf  2200
+#> 2 The Fellowship Of The Ring Hobbit  3658
+#> 3 The Fellowship Of The Ring    Man  1995
+#> 4             The Two Towers    Elf   844
+#> 5             The Two Towers Hobbit  2463
+#> 6             The Two Towers    Man  3990
+#> 7     The Return Of The King    Elf   693
+#> 8     The Return Of The King Hobbit  2675
+#> 9     The Return Of The King    Man  2727
+## outside the tidyverse:
+#(by_race_film <- aggregate(Words ~ Race * Film, data = lotr_tidy, FUN = sum))
 ```
-
-    ##     Race                       Film Words
-    ## 1    Elf The Fellowship Of The Ring  2200
-    ## 2 Hobbit The Fellowship Of The Ring  3658
-    ## 3    Man The Fellowship Of The Ring  1995
-    ## 4    Elf             The Two Towers   844
-    ## 5 Hobbit             The Two Towers  2463
-    ## 6    Man             The Two Towers  3990
-    ## 7    Elf     The Return Of The King   693
-    ## 8 Hobbit     The Return Of The King  2675
-    ## 9    Man     The Return Of The King  2727
 
 We can stare hard at those numbers to answer the question. But even nicer is to depict the word counts we just computed in a barchart.
 
 ``` r
-library(ggplot2)
 p <- ggplot(by_race_film, aes(x = Film, y = Words, fill = Race))
 p + geom_bar(stat = "identity", position = "dodge") +
-  coord_flip() + guides(fill = guide_legend(reverse=TRUE))
+  coord_flip() + guides(fill = guide_legend(reverse = TRUE))
 ```
 
 ![](01-intro_files/figure-markdown_github/barchart-lotr-words-by-film-race-1.png)
 
-`Hobbits` are featured heavily in The Fellowhip of the Ring, where as `Men` had a lot more screen time in The Two Towers. They were equally prominent in the last movie, The Return of the King.
+Hobbits are featured heavily in The Fellowhip of the Ring, where as Men had a lot more screen time in The Two Towers. They were equally prominent in the last movie, The Return of the King.
 
-Again, it was important to have all the data in a single data frame, all word counts in a single variable, and associated variables for `Film` and `Race`.
+Again, it was important to have all the data in a single data frame, all word counts in a single variable, and associated variables for Film and Race.
 
 Take home message
 -----------------
@@ -539,22 +551,27 @@ Having the data in **tidy** form was a key enabler for our data aggregations and
 
 Tidy data is integral to efficient data analysis and visualization.
 
-If you're skeptical about any of the above claims, it would be interesting to get the requested word counts, the barchart, or the insight gained from the chart *without* tidying or plotting the data. And imagine redoing all of that on the full dataset, which includes 3 more `Races`, e.g. `Dwarves`.
+If you're skeptical about any of the above claims, it would be interesting to get the requested word counts, the barchart, or the insight gained from the chart *without* tidying or plotting the data. And imagine redoing all of that on the full dataset, which includes 3 more Races, e.g. Dwarves.
 
 ### Where to next?
 
 In [the next lesson](02-tidy.md), we'll show how to tidy this data.
 
-Our summing over `Gender` to get word counts for `Film * Race` was an example of **data aggregation**. The base function `aggregate()` does simple aggregation. For more flexibility, check out the packages `plyr` and `dplyr`. *point to other lessons when/if they exist?*
+Our summing over gender to get word counts for combinations of film and race is an example of **data aggregation**. Learn more at:
 
-The figure was made with `ggplot2`, a popular package that implements the Grammar of Graphics in R.
+-   Simple aggregation with the tidyverse: `dplyr::count()` and `dplyr::group_by()` + `dplyr::summarize()`, [STAT 545 coverage](http://stat545.com/block010_dplyr-end-single-table.html#group_by-is-a-mighty-weapon), [Data transformation](http://r4ds.had.co.nz/transform.html) chapter in R for Data Science.
+-   General aggregation with the tidyverse: [STAT 545 coverage](http://stat545.com/block024_group-nest-split-map.html) of general Split-Apply-Combine via nested data frames.
+-   Simple aggregation with base R: `aggregate()`.
+
+The figure was made with ggplot2, a popular package that implements the Grammar of Graphics in R.
 
 ### Resources
 
+-   [Tidy data](http://r4ds.had.co.nz/tidy-data.html) chapter in R for Data Science, by Garrett Grolemund and Hadley Wickham
+    -   [tidyr](https://github.com/hadley/tidyr) R package
+    -   The tidyverse meta-package, within which `tidyr` lives: [tidyverse](https://github.com/hadley/tidyversee).
 -   [Bad Data Handbook](http://shop.oreilly.com/product/0636920024422.do) by By Q. Ethan McCallum, published by O'Reilly.
     -   Chapter 3: Data Intended for Human Consumption, Not Machine Consumption by Paul Murrell.
 -   Nine simple ways to make it easier to (re)use your data by EP White, E Baldridge, ZT Brym, KJ Locey, DJ McGlinn, SR Supp. *Ideas in Ecology and Evolution* 6(2): 1–10, 2013. <doi:10.4033/iee.2013.6b.6.f> <http://library.queensu.ca/ojs/index.php/IEE/article/view/4608>
     -   See the section "Use standard table formats"
 -   Tidy data by Hadley Wickham. Journal of Statistical Software. Vol. 59, Issue 10, Sep 2014. <http://www.jstatsoft.org/v59/i10>
-    -   [`tidyr`](https://github.com/hadley/tidyr), an R package to tidy data.
-    -   R packages by the same author that do heavier lifting in the data reshaping and aggregation department include [`reshape2`](https://github.com/hadley/reshape), [`plyr`](https://github.com/hadley/plyr) and [`dplyr`](https://github.com/hadley/dplyr).
