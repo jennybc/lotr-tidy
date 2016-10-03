@@ -5,6 +5,12 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: github_document
 ---
 
+**NOT UPDATED FOR 2016 AND THE TIDYVERSE YET!**
+
+```{r setup, include = FALSE, cache = FALSE}
+knitr::opts_chunk$set(error = TRUE, collapse = TRUE, comment = "#>")
+```
+
 This material is not part of the lesson. But it may be helpful when tidying data in real life.
 
 ## More about `rbind()`ing data frames
