@@ -108,7 +108,9 @@ Watch out for how __untidy__ data seduces you into working with it more than you
 
 ### Where to next?
 
-In the [optional bonus content](03-tidy-bonus-content.md), I show how to tidy this data using only base R functions. At the other extreme, I also show how to tidy with add-on packages that are capable of more advanced data manipulations.
+In the next lesson [03-spread](03-spread.md) I show to untidy data, using `spread()` from the tidyr package. This might be useful at the end of an analysis, for preparing figures or tables.
+
+In the [optional bonus content](04-tidy-bonus-content.md), I show how to tidy this data using only base R functions.
 
 ### Resources
 
