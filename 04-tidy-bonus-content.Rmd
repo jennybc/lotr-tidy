@@ -14,7 +14,7 @@ This material is not part of the lesson. But it may be helpful when tidying data
 
 ## More about `rbind()`ing data frames
 
-In [the main tidy lesson](02-tidy.md), the first step was to stack up `Film`-specific data frames row-wise. First I redo that, then present alternative methods for `rbind()`ing data frames.
+In [the main tidy lesson](02-gather.md), the first step was to stack up `Film`-specific data frames row-wise. First I redo that, then present alternative methods for `rbind()`ing data frames.
 
 ```{r}
 fship <- read.csv(file.path("data", "The_Fellowship_Of_The_Ring.csv"))
@@ -112,7 +112,7 @@ Other options for row binding data frames (and more) include the [`rbindlist()` 
 
 ## More about gathering variables
 
-In [the main tidy lesson](02-tidy.md), the second step was to gather the word counts stored as separate variables for `Females` and `Males` and stack them up to make two new variables: `Words` and `Gender`.
+In [the main tidy lesson](02-gather.md), the second step was to gather the word counts stored as separate variables for `Females` and `Males` and stack them up to make two new variables: `Words` and `Gender`.
 
 We start with the untidy data frame that results from any of the row-binding methods above.
 

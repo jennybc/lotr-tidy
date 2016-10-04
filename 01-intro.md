@@ -553,7 +553,7 @@ If you're skeptical about any of the above claims, it would be interesting to ge
 
 ### Where to next?
 
-In [the next lesson](02-tidy.md), we'll show how to tidy this data.
+In [the next lesson](02-gather.md), we'll show how to tidy this data.
 
 Our summing over gender to get word counts for combinations of film and race is an example of **data aggregation**. It's a frequent companion task with tidying and reshaping. Learn more at:
 
