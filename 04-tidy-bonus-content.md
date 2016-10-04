@@ -1,5 +1,3 @@
-03-tidy-bonus-content.Rmd
-================
 Jenny Bryan
 03 October, 2016
 

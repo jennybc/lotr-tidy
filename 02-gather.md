@@ -1,5 +1,3 @@
-02-tidy.Rmd
-================
 Jenny Bryan
 03 October, 2016
 

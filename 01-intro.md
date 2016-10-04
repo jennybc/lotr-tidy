@@ -1,5 +1,3 @@
-01-intro.Rmd
-================
 Jenny Bryan
 03 October, 2016
 
@@ -25,7 +23,7 @@ I will give you a concrete example of some untidy data I created from [this data
 <tr>
 <td>
 <!-- html table generated in R 3.3.1 by xtable 1.8-2 package -->
-<!-- Mon Oct  3 09:12:27 2016 -->
+<!-- Mon Oct  3 22:43:07 2016 -->
 <table border="1">
 <caption align="top">
 The Fellowship Of The Ring
@@ -78,7 +76,7 @@ Man
 </td>
 <td>
 <!-- html table generated in R 3.3.1 by xtable 1.8-2 package -->
-<!-- Mon Oct  3 09:12:27 2016 -->
+<!-- Mon Oct  3 22:43:07 2016 -->
 <table border="1">
 <caption align="top">
 The Two Towers
@@ -131,7 +129,7 @@ Man
 </td>
 <td>
 <!-- html table generated in R 3.3.1 by xtable 1.8-2 package -->
-<!-- Mon Oct  3 09:12:27 2016 -->
+<!-- Mon Oct  3 22:43:07 2016 -->
 <table border="1">
 <caption align="top">
 The Return Of The King
@@ -206,7 +204,7 @@ Tidy Lord of the Rings data
 Here's how the same data looks in tidy form:
 
 <!-- html table generated in R 3.3.1 by xtable 1.8-2 package -->
-<!-- Mon Oct  3 09:12:27 2016 -->
+<!-- Mon Oct  3 22:43:07 2016 -->
 <table border="1">
 <tr>
 <th>

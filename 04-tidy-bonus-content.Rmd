@@ -1,5 +1,4 @@
 ---
-title: "03-tidy-bonus-content.Rmd"
 author: "Jenny Bryan"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: github_document
