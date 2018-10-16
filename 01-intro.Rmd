@@ -32,13 +32,13 @@ lotr_dat <-
          Gender = ifelse(Character %in% females, "Female", "Male"))
 
 (lotr_tidy <- lotr_dat %>%
-    filter(Race %in% c("Elf", "Hobbit", "Man")) %>%
+    dplyr::filter(Race %in% c("Elf", "Hobbit", "Man")) %>%
     group_by(Film, Gender, Race) %>%
     summarize(Words = sum(Words)))
 (all_combns <- lotr_tidy %>% 
     select(-Words) %>% 
     map(unique) %>% 
-    crossing_())
+    lift_dl(crossing)())
 lotr_tidy <- left_join(all_combns, lotr_tidy) %>% 
   replace_na(list(Words = 0)) %>% 
   mutate(Film = factor(Film, levels = c("The Fellowship Of The Ring",
